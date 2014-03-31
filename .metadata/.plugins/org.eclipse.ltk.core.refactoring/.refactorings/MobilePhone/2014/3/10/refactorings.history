@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 3 elements from project &apos;MobilePhone&apos;&#x0D;&#x0A;- Original project: &apos;MobilePhone&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     bukkit-1.6.4-R2.0.jar&#x0D;&#x0A;     EdgeConomy.jar&#x0D;&#x0A;     EdgeCraft.jar" description="Delete elements" element1="lib/EdgeCraft.jar" element2="lib/EdgeConomy.jar" element3="lib/bukkit-1.6.4-R2.0.jar" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="3" stamp="1394130265349" subPackages="false" version="1.0"/>
+</session>
