@@ -3,7 +3,6 @@ package org.exodevil.MobilePhone.services.Emergency;
 import org.bukkit.conversations.ConversationContext;
 import org.bukkit.conversations.FixedSetPrompt;
 import org.bukkit.conversations.Prompt;
-import org.exodevil.MobilePhone.services.Police.PoliceReason;
 
 public class Emergency extends FixedSetPrompt{
 

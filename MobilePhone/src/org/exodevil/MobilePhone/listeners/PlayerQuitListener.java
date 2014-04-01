@@ -43,7 +43,7 @@ public class PlayerQuitListener implements Listener {
 			}
 		}
 		
-		if (Memory.beginnCALL.contains(u.getID())) {
+		if (Memory.beginnCALL.containsKey(u.getID())) {
 			Memory.beginnCALL.remove(u.getID());
 		}		
 	}

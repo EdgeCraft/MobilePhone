@@ -25,7 +25,11 @@ public class AnswerCallCommand implements CommandExecutor {
 		} else {
 			Player player = (Player) cmds;
 			User p = userManager.getUser(player.getName());
-			if (Memory.beginnCALL.contains(p.getID())) {
+			if (Memory.beginnCALL.containsKey(p.getID())) {
+				int recID = Memory.tempCALL.get(p.getID());
+				
+				Memory.beginnCALL.remove(p.getID());
+				Memory.beginnCALL.remove(recID);
 				CallCommand.openChannel(p);
 				return true;
 			} else {

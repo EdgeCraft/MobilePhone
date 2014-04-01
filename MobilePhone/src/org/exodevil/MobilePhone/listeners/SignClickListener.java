@@ -50,9 +50,8 @@ public class SignClickListener implements Listener {
 			p.sendMessage("Ein Fehler ist aufgetreten. Bitte kontaktiere ein Teammitglied.");
 		} else {
 			if (b instanceof Sign){
-				@SuppressWarnings("unused")
 				boolean isMobileSign = isMobileSign(b);
-				if (isMobileSign = true){
+				if (isMobileSign == true){
 					if (inHand == null){
 						String hasnumber = this.plugin.getConfig().getString("numbern." + playerName + "number");
 						if (hasnumber != null){
@@ -133,11 +132,18 @@ public class SignClickListener implements Listener {
 	}
 
 	public static void buyMobile(Player p, User eventPlayer, EdgeCraftSystem EdgeSystem) {
-		ItemStack hand = p.getItemInHand();
+		System.out.println("Debug#6");
+		
+		ItemStack ItemStack = new ItemStack(Material.CARROT_ITEM);
+		ItemMeta ItemMeta = ItemStack.getItemMeta();
+		ItemMeta.setDisplayName("Handy");
+		ItemStack.setItemMeta(ItemMeta);
+		p.setItemInHand(ItemStack);		
+		/*ItemStack hand = p.getItemInHand();
 		hand.setType(Material.CARROT_ITEM);
 		hand.setAmount(1);
 		ItemMeta meta = hand.getItemMeta();
-		meta.setDisplayName("Handy");
+		meta.setDisplayName("Handy");*/
 	}
 	
 	public static boolean hasMobile(User user) {
@@ -165,17 +171,20 @@ public class SignClickListener implements Listener {
 					p.sendMessage("Du hast leider nicht genug Geld um dir ein Handy kaufen zu können");
 				} else {
 					p.sendMessage("Du hast dir für " + mobileCharge + " ein Handy gekauft.");
+					buyMobile(p, player, EdgeSystem);
 					try {
 						ep.updateCash(Bargeld - Handykosten);
 					} catch (Exception e) {
 						p.sendMessage("Ein Fehler ist aufgetretet. Notiere die aktuelle Uhrzeit und melde diesen Fall einem Teammitglied");
 						e.printStackTrace();
 					}
-					buyMobile(p, player, EdgeSystem);
+					
 				}
 			} else {
 				double balanceAfter = balanceNow - (Handykosten);
-				p.sendMessage("Du hast dir für " + mobileCharge + "ein Handy gekauft.");
+				p.sendMessage("Du hast dir für " + mobileCharge + " ein Handy gekauft.");
+				System.out.println("Debug#7");
+				buyMobile(p, player, EdgeSystem);
 				p.sendMessage("Das Geld wurde von deinem Konto abgebucht");
 				try {
 					acc.updateBalance(balanceAfter);
@@ -183,7 +192,6 @@ public class SignClickListener implements Listener {
 					p.sendMessage("Ein Fehler ist aufgetretet. Notiere die aktuelle Uhrzeit und melde diesen Fall einem Teammitglied");
 					e.printStackTrace();
 				}
-				buyMobile(p, player, EdgeSystem);
 			}
 		} 
 	}
