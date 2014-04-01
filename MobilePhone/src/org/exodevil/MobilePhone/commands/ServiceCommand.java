@@ -14,8 +14,7 @@ public class ServiceCommand implements CommandExecutor {
 			cmds.sendMessage("This command is not applicable for console");
 			return true;
 		} else {
-		Player player = (Player) cmds;
-		Service.start(player);
+		Service.start(cmds);
 		
 		}
 		

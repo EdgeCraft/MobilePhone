@@ -13,6 +13,7 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.exodevil.MobilePhone.commands.AnswerCallCommand;
+import org.exodevil.MobilePhone.commands.BuyMobileCommand;
 import org.exodevil.MobilePhone.commands.CallCommand;
 import org.exodevil.MobilePhone.commands.DenyCallCommand;
 import org.exodevil.MobilePhone.commands.HangUpCommand;
@@ -21,6 +22,7 @@ import org.exodevil.MobilePhone.commands.SMSCommand;
 import org.exodevil.MobilePhone.commands.SearchNumberCommand;
 import org.exodevil.MobilePhone.commands.SearchUserByNumberCommand;
 import org.exodevil.MobilePhone.commands.ServiceCommand;
+import org.exodevil.MobilePhone.commands.SynchUsersCommand;
 import org.exodevil.MobilePhone.listeners.PlayerJoinListener;
 import org.exodevil.MobilePhone.listeners.SignClickListener;
 import org.exodevil.MobilePhone.listeners.SignPlaceListener;
@@ -48,6 +50,11 @@ public class MobilePhone extends JavaPlugin {
 		System.out.println(name + " update list of phone numbers");
 		System.out.println(name + " plugin loaded and enabled");
 		registerCommands();
+		try {
+			Phonebook.synchronizeUsers();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void onDisable(){
@@ -61,7 +68,7 @@ public class MobilePhone extends JavaPlugin {
 		config.options().copyDefaults(true);
 			
 		if (new File("plugins/MobilePhone/config.yml").exists()) {
-			System.out.println(name + " configs successfully created and loaded");
+			System.out.println(name + " configs successfully loaded");
 		} else {
 			saveDefaultConfig();
 			System.out.println(name + " configs successfully created and loaded");
@@ -78,6 +85,8 @@ public class MobilePhone extends JavaPlugin {
 		this.getCommand("searchnumber").setExecutor(new SearchNumberCommand());
 		this.getCommand("searchuser").setExecutor(new SearchUserByNumberCommand());
 		this.getCommand("service").setExecutor(new ServiceCommand());
+		this.getCommand("buymobile").setExecutor(new BuyMobileCommand());
+		this.getCommand("synchusers").setExecutor(new SynchUsersCommand());
 	}
 	
 	public static MobilePhone getInstance() {

@@ -53,7 +53,7 @@ public class Phonebook {
 	}
 
 	public static String getNumberByUser(int id) {
-		return MobilePhone.numbers.containsKey(id) ? MobilePhone.numbers.get(id) : "";
+		return MobilePhone.numbers.containsKey(id) ? MobilePhone.numbers.get(id).toString() : "";
 	}	
 	
 	public static boolean UserIsInCall(int id) {

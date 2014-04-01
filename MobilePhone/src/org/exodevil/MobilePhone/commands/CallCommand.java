@@ -8,6 +8,7 @@ import net.edgecraft.edgecore.lang.LanguageHandler;
 import net.edgecraft.edgecore.user.User;
 import net.edgecraft.edgecore.user.UserManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -15,7 +16,6 @@ import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.listeners.IncomingCallTask;
 import org.exodevil.MobilePhone.listeners.SignClickListener;
-import org.exodevil.MobilePhone.services.Service;
 import org.exodevil.MobilePhone.sms.Memory;
 
 public class CallCommand implements CommandExecutor {
@@ -41,41 +41,38 @@ public class CallCommand implements CommandExecutor {
 				cmds.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_only_one_number"));
 				return true;
 			}
-			String number = args.toString();
-			//Service-Nummern erkennen
-			boolean isService = Phonebook.isServiceNumber(number);
-			if (isService = true) {
-				Service.start(player);
+			String number = args[0].toString();
+			User searchFor = Phonebook.getUserByNumber(number);
+			System.out.println("Mobile " + number);
+			System.out.println("Mobile " + searchFor);
+			Player receiver =  Bukkit.getPlayer(searchFor.getName());
+			System.out.println("Mobile " + receiver);
+			if (!(receiver.isOnline())) {
+				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_offline"));
+				List<String> missed = Memory.missedCALL.get(p.getID());
+
+				missed.add(player.getName());
+
+				Memory.missedCALL.put(p.getID(), missed);
 				return true;
-			} else {
-
-
-				User searchFor = Phonebook.getUserByNumber(number);
-				Player receiver =  (Player) searchFor;
-				User rec = userManager.getUser(receiver.getName());
-				if (!(receiver.isOnline())) {
-					player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_offline"));
-					List<String> missed = Memory.missedCALL.get(p.getID());
-
-					missed.add(player.getName());
-
-					Memory.missedCALL.put(p.getID(), missed);
+			}
+			//boolean PIsInCall = Phonebook.UserIsInCall(p.getID());
+			//boolean RIsInCall = Phonebook.UserIsInCall(rec.getID());
+			User rec = userManager.getUser(receiver.getName());
+			boolean PIsInCall = false;
+			boolean RIsInCall = false;
+			if (PIsInCall == false) {
+				if (RIsInCall == false) {
+					Memory.beginnCALL.add(p.getID());
+					IncomingCallTask.Ringing(player, receiver);
+					Memory.tempCALL.put(rec.getID(), p.getID());
 					return true;
-				}
-				boolean PIsInCall = Phonebook.UserIsInCall(p.getID());
-				boolean RIsInCall = Phonebook.UserIsInCall(rec.getID());
-				if (PIsInCall = false) {
-					if (RIsInCall = false) {
-						Memory.beginnCALL.add(p.getID());
-						IncomingCallTask.Ringing(player, receiver);
-						Memory.tempCALL.put(rec.getID(), p.getID());
-						return true;
-					}
+				} else {
 					player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_busy"));
 					return true;
 				}
+			} else {
 				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_in_call"));
-
 				return true;
 			}
 		}

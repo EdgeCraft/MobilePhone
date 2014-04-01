@@ -28,7 +28,7 @@ import org.exodevil.MobilePhone.Phonebook;
 public class SignClickListener implements Listener {
 
 	final UserManager userManager = EdgeCoreAPI.userAPI();
-	final Economy economy = EdgeConomyAPI.economyAPI();
+	final static Economy economy = EdgeConomyAPI.economyAPI();
 	final EdgeCraftSystem EdgeSystem = EdgeCoreAPI.systemAPI();
 	final DatabaseHandler db = EdgeCoreAPI.databaseAPI();
 	private MobilePhone plugin;
@@ -56,13 +56,23 @@ public class SignClickListener implements Listener {
 					if (inHand == null){
 						String hasnumber = this.plugin.getConfig().getString("numbern." + playerName + "number");
 						if (hasnumber != null){
-							payMobile(playerName, acc, ep, Handykosten, EdgeSystem);
+							payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
 							p.sendMessage("Deine Handynumber lautet: "  + hasnumber);
 						} else {
 							String number = generatenumber(playerName);
-							payMobile(playerName, acc, ep, Handykosten, EdgeSystem);
+							payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
 							p.sendMessage("Glückwunsch. Du hast dir dein erstes Handy gekauft");
 							p.sendMessage("Deine Handynumber lautet: " + number);
+							int id = userManager.getUser(p.getName()).getID();
+							PreparedStatement registerNumber = db.prepareUpdate("INSERT INTO mobilephone_contracts (id, number) VALUES (?, default);");
+							registerNumber.setInt(1, id);
+							registerNumber.setString(2, number);
+							
+							registerNumber.executeUpdate();
+							
+							Phonebook.synchronizeUsers();
+							
+							
 						}
 					}else {
 						p.sendMessage("Bitte wähle einen freien Platz in deiner Hotbar aus!");
@@ -90,11 +100,11 @@ public class SignClickListener implements Listener {
 		} else return false;
 	}
 
-	public String generatenumber(User eventPlayer) throws Exception {
+	public static String generatenumber(User eventPlayer) throws Exception {
 		User playerName = eventPlayer;
 		int id = playerName.getID();
 		String hasnumber = Phonebook.getNumberByUser(id);
-		if (hasnumber == null) {		
+		if (hasnumber.length() <= 3) {		
 			double random = Math.random();
 			double random2 = random * 100000;
 			int random3 = (int) random2;
@@ -114,12 +124,6 @@ public class SignClickListener implements Listener {
 				} else {
 					//number und Name des Spielers in die Datenbank eintragen
 					MobilePhone.numbers.put(playerName.getID(), number);
-					Phonebook.synchronizeUsers();
-					PreparedStatement statement = db.prepareUpdate("INSERT INTO mobilephone_contracts (id, number) VALUES (?, ?);");
-					statement.setInt(1, id);
-					statement.setString(2, number);
-
-					statement.executeUpdate();
 					break;
 				}
 			}
@@ -128,9 +132,7 @@ public class SignClickListener implements Listener {
 		return hasnumber;
 	}
 
-	public void buyMobile(User eventPlayer, EdgeCraftSystem EdgeSystem) {
-		User playerName = eventPlayer;
-		Player p = (Player) playerName;
+	public static void buyMobile(Player p, User eventPlayer, EdgeCraftSystem EdgeSystem) {
 		ItemStack hand = p.getItemInHand();
 		hand.setType(Material.CARROT_ITEM);
 		hand.setAmount(1);
@@ -152,10 +154,9 @@ public class SignClickListener implements Listener {
 		return false;
 	}
 
-	public void payMobile(User playerName, BankAccount acc, EconomyPlayer ep, double Handykosten, EdgeCraftSystem EdgeSystem){
+	public static void payMobile(Player p, User player, BankAccount acc, EconomyPlayer ep, double Handykosten, EdgeCraftSystem EdgeSystem){
 		double balanceNow = acc.getBalance();
-		Player p = (Player) playerName;
-		String pName = playerName.getName();
+		String pName = player.getName();
 		String mobileCharge = Handykosten + "";
 		if (economy.getAccount(pName) != null) {
 			if (balanceNow <= Handykosten) {
@@ -163,14 +164,14 @@ public class SignClickListener implements Listener {
 				if (Bargeld <= Handykosten) {
 					p.sendMessage("Du hast leider nicht genug Geld um dir ein Handy kaufen zu können");
 				} else {
-					p.sendMessage("Du hast dir für " + mobileCharge + "ein Handy gekauft.");
+					p.sendMessage("Du hast dir für " + mobileCharge + " ein Handy gekauft.");
 					try {
 						ep.updateCash(Bargeld - Handykosten);
 					} catch (Exception e) {
 						p.sendMessage("Ein Fehler ist aufgetretet. Notiere die aktuelle Uhrzeit und melde diesen Fall einem Teammitglied");
 						e.printStackTrace();
 					}
-					buyMobile(playerName, EdgeSystem);
+					buyMobile(p, player, EdgeSystem);
 				}
 			} else {
 				double balanceAfter = balanceNow - (Handykosten);
@@ -182,7 +183,7 @@ public class SignClickListener implements Listener {
 					p.sendMessage("Ein Fehler ist aufgetretet. Notiere die aktuelle Uhrzeit und melde diesen Fall einem Teammitglied");
 					e.printStackTrace();
 				}
-				buyMobile(playerName, EdgeSystem);
+				buyMobile(p, player, EdgeSystem);
 			}
 		} 
 	}

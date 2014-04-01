@@ -6,6 +6,7 @@ import net.edgecraft.edgecore.EdgeCoreAPI;
 import net.edgecraft.edgecore.user.User;
 import net.edgecraft.edgecore.user.UserManager;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -55,7 +56,7 @@ public class SMSCommand implements CommandExecutor {
 					String args0 = "";
 					args0 = args[0].toString();
 					User rec = Phonebook.getUserByNumber(args0);
-					Player recipient = (Player) rec;
+					Player recipient = Bukkit.getPlayer(rec.getName());
 					if (rec != null) {
 						double balanceP = economy.getAccount(user.getID()).getBalance();
 						double SMSCost = this.plugin.getConfig().getDouble("sms.kosten");
@@ -67,7 +68,7 @@ public class SMSCommand implements CommandExecutor {
 							} else {
 								if (balanceP >= SMSCost) {
 									player.sendMessage("Dir wurden " + SMSCost + " abgezogen");
-									recipient.sendMessage("Du hast eine Nachricht von: " + player);
+									recipient.sendMessage("Du hast eine Nachricht von: " + player.getName());
 									recipient.sendMessage(text);
 									player.sendMessage("Deine Nachricht wurde erfolgreich zugestellt.");
 									return true;

@@ -31,3 +31,9 @@ commands:
     service:
         description: service number
         usage: /<command>
+    buymobile:
+        description: buys a mobile
+        usage: /<command>
+    synchusers:
+        description: buys a mobile
+        usage: /<command>
