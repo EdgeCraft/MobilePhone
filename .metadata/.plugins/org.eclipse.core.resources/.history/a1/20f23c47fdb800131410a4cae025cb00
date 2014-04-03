@@ -1,0 +1,138 @@
+package org.exodevil.MobilePhone;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.HashMap;
+
+import net.edgecraft.edgecore.EdgeCoreAPI;
+import net.edgecraft.edgecore.db.DatabaseHandler;
+import net.edgecraft.edgecore.user.UserManager;
+
+import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.exodevil.MobilePhone.commands.AnswerCallCommand;
+import org.exodevil.MobilePhone.commands.CallCommand;
+import org.exodevil.MobilePhone.commands.DenyCallCommand;
+import org.exodevil.MobilePhone.commands.HangUpCommand;
+import org.exodevil.MobilePhone.commands.NumberCommand;
+import org.exodevil.MobilePhone.commands.SMSCommand;
+import org.exodevil.MobilePhone.commands.SearchNumberCommand;
+import org.exodevil.MobilePhone.commands.SearchUserByNumberCommand;
+import org.exodevil.MobilePhone.commands.ServiceCommand;
+import org.exodevil.MobilePhone.listeners.PlayerJoinListener;
+import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.SignPlaceListener;
+
+public class MobilePhone extends JavaPlugin {
+
+	File configFile;    
+	FileConfiguration config;
+	public static String name = "[MobilePhone]";
+	public static MobilePhone instance;
+	
+	final DatabaseHandler DatabaseHandler = EdgeCoreAPI.databaseAPI();
+	final UserManager UserManager = EdgeCoreAPI.userAPI();
+	public static HashMap<Integer, String> numbers = new HashMap<Integer, String> ();
+
+	@Override
+	public void onEnable(){
+		instance = this;
+		System.out.println(name + " loading configs");
+		configFile = new File(getDataFolder(), "config.yml");
+		try {
+			firstRun();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		config = new YamlConfiguration();
+		loadYamls();
+		System.out.println(name + " configs loaded successfully");    
+		PluginDescriptionFile descFile = this.getDescription();
+		System.out.println(name + " Version: " + descFile.getVersion() + " by " + descFile.getAuthors());
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(new SignPlaceListener(this), this);
+		pm.registerEvents(new SignClickListener(this), this);
+		pm.registerEvents(new PlayerJoinListener(), this );
+		System.out.println(name + " update list of phone numbers");
+		System.out.println(name + " plugin loaded and enabled");
+		registerCommands();
+	}
+
+	public void onDisable(){
+		System.out.println(name + " saving configs");
+		saveYamls();
+		Bukkit.getScheduler().cancelAllTasks();
+		System.out.println(name + " plugin disabled");
+	}
+
+	private void firstRun() throws Exception {
+		if(!configFile.exists()){
+			configFile.getParentFile().mkdirs(); 
+			copy(getResource("config.yml"), configFile);
+		}
+	}
+
+	private void copy(InputStream in, File file) {
+		try {
+			OutputStream out = new FileOutputStream(file);
+			byte[] buf = new byte[1024];
+			int len;
+			while((len=in.read(buf))>0){
+				out.write(buf,0,len);
+			}
+			out.close();
+			in.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void loadYamls() {
+		try {
+			config.load(configFile);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidConfigurationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void saveYamls() {
+		try {
+			config.save(configFile); 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public void registerCommands() {
+		this.getCommand("number").setExecutor(new NumberCommand());
+		this.getCommand("call").setExecutor(new CallCommand());
+		this.getCommand("sms").setExecutor(new SMSCommand(this));
+		this.getCommand("answer").setExecutor(new AnswerCallCommand());
+		this.getCommand("deny").setExecutor(new DenyCallCommand());
+		this.getCommand("hangup").setExecutor(new HangUpCommand());
+		this.getCommand("searchnumber").setExecutor(new SearchNumberCommand());
+		this.getCommand("searchuser").setExecutor(new SearchUserByNumberCommand());
+		this.getCommand("service").setExecutor(new ServiceCommand());
+	}
+	
+	public static MobilePhone getInstance() {
+		return instance;
+	}
+
+}
