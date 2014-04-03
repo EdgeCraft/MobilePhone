@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.listeners.IncomingCallTask;
 import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.WatchCostsTask;
 import org.exodevil.MobilePhone.sms.Memory;
 
 public class CallCommand implements CommandExecutor {
@@ -30,7 +31,6 @@ public class CallCommand implements CommandExecutor {
 			cmds.sendMessage("This command is not applicable for console");
 			return true;
 		}
-		System.out.println("Debug#4");
 		Player player = (Player) cmds;
 		User p = userManager.getUser(player.getName());
 		boolean mobile = SignClickListener.hasMobile(p);
@@ -42,14 +42,19 @@ public class CallCommand implements CommandExecutor {
 				cmds.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_only_one_number"));
 				return true;
 			}
-			System.out.println("Debug#5");
 			String number = args[0].toString();
 			User searchFor = Phonebook.getUserByNumber(number);
-			System.out.println("Mobile " + number);
-			System.out.println("Mobile " + searchFor);
+			if (searchFor == null) {
+				player.sendMessage("Nummer nicht gefunden");
+				return true;
+			}
 			Player receiver =  Bukkit.getPlayer(searchFor.getName());
 			User rec = userManager.getUser(receiver.getName());
-			System.out.println("Mobile " + receiver);
+			String numberPlayer = Phonebook.getNumberByUser(p.getID());
+			if (numberPlayer.equals(number)) {
+				player.sendMessage("Du kannst dich nicht selber anrufen.");
+				return true;
+			}
 			if (!(receiver.isOnline())) {
 				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_offline"));
 				List<String> missed = Memory.missedCALL.get(p.getID());
@@ -63,14 +68,15 @@ public class CallCommand implements CommandExecutor {
 			boolean RIsInCall = Phonebook.UserIsInCall(rec.getID());
 			if (PIsInCall == false) {
 				if (RIsInCall == false) {
+					String numberP = Phonebook.getNumberByUser(p.getID());
 					Memory.beginnCALL.put(p.getID(), true);
 					Memory.beginnCALL.put(rec.getID(), true);
-					System.out.println("Debug#1");
 					IncomingCallTask.Ringing(player, receiver);
 					IncomingCallTask.Occupied(player, receiver);
-					Memory.tempCALL.put(rec.getID(), p.getID());
-					Memory.tempCALL2.put(p.getID(), rec.getID());
-					System.out.println("Debug#3");
+					Memory.isP.put("MP_" + numberP, p.getID());
+					Memory.isRec.put("MP_" + numberP, rec.getID());
+					Memory.receiver.put(rec.getID(), p.getID());
+					Memory.caller.put(p.getID(), rec.getID());
 					return true;
 				} else {
 					player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_busy"));
@@ -85,21 +91,22 @@ public class CallCommand implements CommandExecutor {
 		}
 	}
 
-	public static void openChannel(User rec) {
-		int pID = Memory.tempCALL.get(rec.getID());
+	public static void openChannel(int recID, int pID) {
 		Memory.inCALL.put(pID, true);
-		Memory.inCALL.put(rec.getID(), true);
+		Memory.inCALL.put(recID, true);
 		String numberP = Phonebook.getNumberByUser(pID);
 		String chid = "MP_" + numberP;
 		System.out.println(chid);
-		Channel channel =  new Channel(chid, false, null);
-		System.out.println("Debug#8");
+		Channel channel =  new Channel(chid, false, Material.CARROT_ITEM);
 		EdgeCoreAPI.chatAPI().addChannel(channel);
 		User p = userManager.getUser(pID);
+		User rec = userManager.getUser(recID);
 		channel.addMember(p);
 		channel.addMember(rec);
 		long beginnCall = System.currentTimeMillis();
+		System.out.println("Beginn: " + beginnCall);
 		Memory.callLength.put(chid, beginnCall);
+		WatchCostsTask.Watch(pID, recID);
 	}
 
 }

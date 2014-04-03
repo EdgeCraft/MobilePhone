@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
+import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.sms.Memory;
 
 public class IncomingCallTask {
@@ -22,7 +23,6 @@ public class IncomingCallTask {
 			TaskID = Bukkit.getScheduler().scheduleSyncRepeatingTask(MobilePhone.getInstance(), new Runnable() {
 				@Override
 				public void run() {
-					System.out.println("Debug#2");
 					if (Memory.beginnCALL.containsKey(id)) {
 					receiver.sendMessage("Ring!!");
 					receiver.sendMessage("Eingehender Anruf von: " + player.getName());
@@ -42,12 +42,13 @@ public class IncomingCallTask {
 			@Override
 			public void run() {
 				if (Memory.beginnCALL.containsKey(p.getID())) {
+					String numberP = Phonebook.getNumberByUser(p.getID());
 					Bukkit.getScheduler().cancelTask(TaskID);
 					player.sendMessage("Der angerufene Teilnehmer ist zur Zeit nicht erreichbar.");
 					Memory.beginnCALL.remove(p.getID());
 					Memory.beginnCALL.remove(rec.getID());
-					Memory.tempCALL2.remove(p.getID());
-					Memory.tempCALL.remove(rec.getID());
+					Memory.isP.remove("MP_" + numberP);
+					Memory.isRec.remove("MP_" + numberP);
 				}				
 			}
 		}, 1200L);

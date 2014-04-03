@@ -55,8 +55,6 @@ public class BuyMobileCommand implements CommandExecutor {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-
-
 				}
 			return true;
 		}

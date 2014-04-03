@@ -11,7 +11,7 @@ public class Police extends FixedSetPrompt{
 	}
 
 	public String getPromptText(ConversationContext context) {
-		return "Sie sind mit Polizeizentrale verbunden. Bitte wählen Sie ihr Problem.";
+		return "Sie sind mit Polizeizentrale verbunden. Bitte wählen Sie ihr Problem. " + formatFixedSet();
 	}
 
 	@Override

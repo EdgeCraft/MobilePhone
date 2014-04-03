@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.exodevil.MobilePhone.listeners.SignClickListener;
 import org.exodevil.MobilePhone.sms.Memory;
 
 public class AnswerCallCommand implements CommandExecutor {
@@ -23,17 +24,20 @@ public class AnswerCallCommand implements CommandExecutor {
 			cmds.sendMessage("This command is not applicable for console");
 			return true;
 		} else {
-			Player player = (Player) cmds;
-			User p = userManager.getUser(player.getName());
-			if (Memory.beginnCALL.containsKey(p.getID())) {
-				int recID = Memory.tempCALL.get(p.getID());
-				
-				Memory.beginnCALL.remove(p.getID());
-				Memory.beginnCALL.remove(recID);
-				CallCommand.openChannel(p);
+			Player receiver = (Player) cmds;
+			User rec = userManager.getUser(receiver.getName());
+			if (Memory.beginnCALL.containsKey(rec.getID())) {
+				boolean hasMobile = SignClickListener.hasMobile(rec);
+				if (hasMobile == false) {
+					receiver.sendMessage(lang.getColoredMessage(rec.getLanguage(), "phone_mobile_in_hand"));
+				}
+				int pID = Memory.receiver.get(rec.getID());
+				Memory.beginnCALL.remove(rec.getID());
+				Memory.beginnCALL.remove(pID);
+				CallCommand.openChannel(rec.getID(), pID);
 				return true;
 			} else {
-				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_not_called"));
+				receiver.sendMessage(lang.getColoredMessage(rec.getLanguage(), "phone_not_called"));
 			}
 			
 			return true;

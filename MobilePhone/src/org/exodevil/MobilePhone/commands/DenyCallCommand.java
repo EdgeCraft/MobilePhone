@@ -23,22 +23,21 @@ public class DenyCallCommand implements CommandExecutor {
 			cmds.sendMessage("This command is not applicable for console");
 			return true;
 		} else {
-			Player player = (Player) cmds;
-			User p = userManager.getUser(player.getName());
-			if (Memory.beginnCALL.containsKey(p.getID())) {
-				Memory.beginnCALL.remove(p.getID());
-				int recID = Memory.tempCALL.get(p.getID());
+			Player receiver = (Player) cmds;
+			User rec = userManager.getUser(receiver.getName());
+			if (Memory.beginnCALL.containsKey(rec.getID())) {
+				Memory.beginnCALL.remove(rec.getID());
+				int pID = Memory.receiver.get(rec.getID());
+				int recID = rec.getID();
 				Memory.beginnCALL.remove(recID);
 				
-				Memory.tempCALL2.remove(p.getID());
-				Memory.tempCALL.remove(recID);
-				player.sendMessage("Anruf abgelehnt.");
-				User rec = userManager.getUser(recID);
-				Player receiver = Bukkit.getPlayer(rec.getName());
-				receiver.sendMessage("Anruf wurde nicht angenommen.");				
+				receiver.sendMessage("Anruf abgelehnt.");
+				User p = userManager.getUser(pID);
+				Player player = Bukkit.getPlayer(p.getName());
+				player.sendMessage("Anruf wurde nicht angenommen.");				
 				return true;
 			} else {
-				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_not_called"));
+				receiver.sendMessage(lang.getColoredMessage(rec.getLanguage(), "phone_not_called"));
 			}
 			
 			return true;

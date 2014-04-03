@@ -66,12 +66,8 @@ public class SignClickListener implements Listener {
 							PreparedStatement registerNumber = db.prepareUpdate("INSERT INTO mobilephone_contracts (id, number) VALUES (?, default);");
 							registerNumber.setInt(1, id);
 							registerNumber.setString(2, number);
-							
 							registerNumber.executeUpdate();
-							
 							Phonebook.synchronizeUsers();
-							
-							
 						}
 					}else {
 						p.sendMessage("Bitte wähle einen freien Platz in deiner Hotbar aus!");
@@ -139,11 +135,6 @@ public class SignClickListener implements Listener {
 		ItemMeta.setDisplayName("Handy");
 		ItemStack.setItemMeta(ItemMeta);
 		p.setItemInHand(ItemStack);		
-		/*ItemStack hand = p.getItemInHand();
-		hand.setType(Material.CARROT_ITEM);
-		hand.setAmount(1);
-		ItemMeta meta = hand.getItemMeta();
-		meta.setDisplayName("Handy");*/
 	}
 	
 	public static boolean hasMobile(User user) {

@@ -60,9 +60,10 @@ public class MobilePhone extends JavaPlugin {
 	public void onDisable(){
 		System.out.println(name + " saving configs");
 		Bukkit.getScheduler().cancelAllTasks();
+		//alle nicht beendeten Gespräche beenden und abrechnen
 		System.out.println(name + " plugin disabled");
 	}
-
+	
 	public void loadConfig(){
 		config = getConfig();
 		config.options().copyDefaults(true);
@@ -92,5 +93,28 @@ public class MobilePhone extends JavaPlugin {
 	public static MobilePhone getInstance() {
 		return instance;
 	}
+	
+	
+	/*
+	for(User u : UserManagerOderSo.getUsers()){
 
+if(!JobManager.getInstance().isWorking(u.getPlayer()) continue;
+
+AbstractJob job = JobManager.getInstance().getJob(u.getPlayer);
+
+if(job.getName() == "xyz") return job;
+
+}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	*/
 }
