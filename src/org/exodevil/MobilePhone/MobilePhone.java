@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import net.edgecraft.edgecore.EdgeCoreAPI;
+import net.edgecraft.edgecore.command.CommandHandler;
 import net.edgecraft.edgecore.db.DatabaseHandler;
 import net.edgecraft.edgecore.user.UserManager;
 
@@ -19,6 +20,7 @@ import org.exodevil.MobilePhone.commands.DenyCallCommand;
 import org.exodevil.MobilePhone.commands.HangUpCommand;
 import org.exodevil.MobilePhone.commands.NumberCommand;
 import org.exodevil.MobilePhone.commands.SMSCommand;
+import org.exodevil.MobilePhone.commands.SearchCommand;
 import org.exodevil.MobilePhone.commands.SearchNumberCommand;
 import org.exodevil.MobilePhone.commands.SearchUserByNumberCommand;
 import org.exodevil.MobilePhone.commands.ServiceCommand;
@@ -35,6 +37,7 @@ public class MobilePhone extends JavaPlugin {
 	
 	final DatabaseHandler DatabaseHandler = EdgeCoreAPI.databaseAPI();
 	final UserManager UserManager = EdgeCoreAPI.userAPI();
+	protected static final CommandHandler commands = CommandHandler.getInstance();
 	public static HashMap<Integer, String> numbers = new HashMap<Integer, String> ();
 
 	@Override
@@ -83,11 +86,10 @@ public class MobilePhone extends JavaPlugin {
 		this.getCommand("answer").setExecutor(new AnswerCallCommand());
 		this.getCommand("deny").setExecutor(new DenyCallCommand());
 		this.getCommand("hangup").setExecutor(new HangUpCommand());
-		this.getCommand("searchnumber").setExecutor(new SearchNumberCommand());
-		this.getCommand("searchuser").setExecutor(new SearchUserByNumberCommand());
 		this.getCommand("service").setExecutor(new ServiceCommand());
 		this.getCommand("buymobile").setExecutor(new BuyMobileCommand());
 		this.getCommand("synchusers").setExecutor(new SynchUsersCommand());
+		commands.registerCommand(SearchCommand.getInstance());
 	}
 	
 	public static MobilePhone getInstance() {

@@ -30,6 +30,7 @@ public class AnswerCallCommand implements CommandExecutor {
 				boolean hasMobile = SignClickListener.hasMobile(rec);
 				if (hasMobile == false) {
 					receiver.sendMessage(lang.getColoredMessage(rec.getLanguage(), "phone_mobile_in_hand"));
+					return true;
 				}
 				int pID = Memory.receiver.get(rec.getID());
 				Memory.beginnCALL.remove(rec.getID());
