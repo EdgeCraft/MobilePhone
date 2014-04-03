@@ -1,0 +1,39 @@
+name: MobilePhone
+version: 0.1
+main: org.exodevil.MobilePhone.MobilePhone
+author: Exodevil
+website: http://edgecraft.de/
+commands:
+    number:
+        description: gives back your number
+        usage: /<command>
+    call:
+        description: calls another user
+        usage: /<command>
+    sms:
+        description: sms to another user
+        usage: /<command>
+    answer:
+        description: answer incoming call
+        usage: /<command>
+    deny:
+        description: deny incoming call
+        usage: /<command>
+    hangup:
+        description: end active call
+        usage: /<command>
+    searchnumber:
+        description: search number by user
+        usage: /<command>
+    searchuser:
+        description: search user by number
+        usage: /<command>
+    service:
+        description: service number
+        usage: /<command>
+    buymobile:
+        description: buys a mobile
+        usage: /<command>
+    synchusers:
+        description: buys a mobile
+        usage: /<command>
