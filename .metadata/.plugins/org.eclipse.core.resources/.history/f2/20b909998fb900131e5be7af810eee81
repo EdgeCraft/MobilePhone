@@ -1,5 +1,0 @@
-package org.exodevil.MobilePhone.commands;
-
-public class BuyMobileCommand {
-
-}
