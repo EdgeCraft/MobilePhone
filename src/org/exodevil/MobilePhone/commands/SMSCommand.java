@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
 import org.exodevil.MobilePhone.Phonebook;
-import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.BuyMobileTask;
 import org.exodevil.MobilePhone.sms.Memory;
 
 public class SMSCommand implements CommandExecutor {
@@ -36,7 +36,7 @@ public class SMSCommand implements CommandExecutor {
 		} else {
 			Player player = (Player) cmds;
 			User user = userManager.getUser(player.getName());
-			boolean mobile = SignClickListener.hasMobile(user);
+			boolean mobile = BuyMobileTask.hasMobile(user);
 			if (mobile = false) {
 				player.sendMessage("Bitte nimm dein Handy in die Hand");
 				return false;

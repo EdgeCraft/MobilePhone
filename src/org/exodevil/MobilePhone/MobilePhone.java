@@ -21,12 +21,11 @@ import org.exodevil.MobilePhone.commands.HangUpCommand;
 import org.exodevil.MobilePhone.commands.NumberCommand;
 import org.exodevil.MobilePhone.commands.SMSCommand;
 import org.exodevil.MobilePhone.commands.SearchCommand;
-import org.exodevil.MobilePhone.commands.SearchNumberCommand;
-import org.exodevil.MobilePhone.commands.SearchUserByNumberCommand;
 import org.exodevil.MobilePhone.commands.ServiceCommand;
 import org.exodevil.MobilePhone.commands.SynchUsersCommand;
+import org.exodevil.MobilePhone.commands.TestCommand;
 import org.exodevil.MobilePhone.listeners.PlayerJoinListener;
-import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.BuyMobileTask;
 import org.exodevil.MobilePhone.listeners.SignPlaceListener;
 
 public class MobilePhone extends JavaPlugin {
@@ -48,7 +47,7 @@ public class MobilePhone extends JavaPlugin {
 		System.out.println(name + " Version: " + descFile.getVersion() + " by " + descFile.getAuthors());
 		PluginManager pm = this.getServer().getPluginManager();
 		pm.registerEvents(new SignPlaceListener(this), this);
-		pm.registerEvents(new SignClickListener(this), this);
+		pm.registerEvents(new BuyMobileTask(this), this);
 		pm.registerEvents(new PlayerJoinListener(), this );
 		System.out.println(name + " update list of phone numbers");
 		System.out.println(name + " plugin loaded and enabled");
@@ -89,6 +88,7 @@ public class MobilePhone extends JavaPlugin {
 		this.getCommand("service").setExecutor(new ServiceCommand());
 		this.getCommand("buymobile").setExecutor(new BuyMobileCommand());
 		this.getCommand("synchusers").setExecutor(new SynchUsersCommand());
+		this.getCommand("test").setExecutor(new TestCommand());
 		commands.registerCommand(SearchCommand.getInstance());
 	}
 	
@@ -107,16 +107,6 @@ AbstractJob job = JobManager.getInstance().getJob(u.getPlayer);
 if(job.getName() == "xyz") return job;
 
 }
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	*/
 }

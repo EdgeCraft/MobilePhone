@@ -16,7 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.listeners.IncomingCallTask;
-import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.BuyMobileTask;
 import org.exodevil.MobilePhone.listeners.WatchCostsTask;
 import org.exodevil.MobilePhone.sms.Memory;
 
@@ -33,7 +33,7 @@ public class CallCommand implements CommandExecutor {
 		}
 		Player player = (Player) cmds;
 		User p = userManager.getUser(player.getName());
-		boolean mobile = SignClickListener.hasMobile(p);
+		boolean mobile = BuyMobileTask.hasMobile(p);
 		if (mobile == false) {
 			player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_mobile_in_hand"));
 			return true;

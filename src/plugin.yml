@@ -37,3 +37,6 @@ commands:
     synchusers:
         description: buys a mobile
         usage: /<command>
+    test:
+        description: testcommand
+        usage: /<command>

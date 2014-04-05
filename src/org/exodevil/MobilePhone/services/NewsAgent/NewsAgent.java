@@ -7,21 +7,28 @@ import org.bukkit.conversations.Prompt;
 public class NewsAgent extends FixedSetPrompt{
 
 	public NewsAgent() {
-		super( "Diebstahl", "Banküberfall", "Mord", "Sonstiges", "Abbruch" );
+		super( "Werbeanzeige schalten", "Interview", "Sonstiges", "Abbruch" );
 	}
 
 	public String getPromptText(ConversationContext context) {
-		return "Sie sind mit Polizeizentrale verbunden. Bitte schildern sie KURZ ihr Problem.";
+		return "Sie sind mit der Newszentrale verbunden. Bitte wählen Sie Ihr Anliegen. " + formatFixedSet();
 	}
 
 	@Override
 	protected Prompt acceptValidatedInput(ConversationContext context, String s) {
 		if (s.equals("Abbruch")) {
 			return Prompt.END_OF_CONVERSATION;
-		}
-		context.setSessionData("reason", s);
-
-		//put in db
-		return Prompt.END_OF_CONVERSATION;
+		} else  if (s.equals("Werbeanzeige schalten")){
+			context.setSessionData("reason", s);
+			return new NewsAgentAdvertisment();
+		} else if (s.equals("Interview")) {
+			context.setSessionData("reason", s);
+			return new NewsAgentInterview();
+		}  else if (s.equals("Sonstiges")) {
+			context.setSessionData("reason", s);
+			return new NewsAgentOther();
+		} else {
+			return Prompt.END_OF_CONVERSATION;
+		}		
 	}
 }

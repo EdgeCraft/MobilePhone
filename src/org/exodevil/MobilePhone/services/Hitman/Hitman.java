@@ -7,21 +7,22 @@ import org.bukkit.conversations.Prompt;
 public class Hitman extends FixedSetPrompt{
 
 	public Hitman() {
-		super( "Diebstahl", "Banküberfall", "Mord", "Sonstiges", "Abbruch" );
+		super( "Auftrag erstellen", "Abbruch" );
 	}
 
 	public String getPromptText(ConversationContext context) {
-		return "Sie sind mit Polizeizentrale verbunden. Bitte schildern sie KURZ ihr Problem.";
+		return "Hi. Was kann ich für Sie tun?";
 	}
 
 	@Override
 	protected Prompt acceptValidatedInput(ConversationContext context, String s) {
 		if (s.equals("Abbruch")) {
 			return Prompt.END_OF_CONVERSATION;
-		}
-		context.setSessionData("reason", s);
-
-		//put in db
-		return Prompt.END_OF_CONVERSATION;
+		} else  if (s.equals("Auftrag erstellen")){
+			context.setSessionData("reason", s);
+			return new HitmanTarget();
+		}   else {
+			return Prompt.END_OF_CONVERSATION;
+		}		
 	}
 }

@@ -43,28 +43,25 @@ public class PoliceReason extends StringPrompt {
 
 	@Override
 	public String getPromptText(ConversationContext context) {
-		return "Sie sind mit Polizeizentrale verbunden. Bitte schildern sie KURZ ihr Problem.";
+		return "Bitte schildern sie KURZ ihr Problem.";
 	}
 
 	public void updateDB(int userID, String reason, String problem) throws Exception {
-		List<Map<String, Object>> results = db.getResults("SELECT MAX(serviceid) FROM service_police;");
-		List<Map<String, Object>> equal = db.getResults("SELECT MAX(serviceid) FROM service_empty");
-		int serviceID = 0;
-		if (!results.equals(equal)) {
-			for (int i = 0; i < results.size(); i++) {
-				for (Map.Entry<String, Object> entry : results.get(i).entrySet()) {
-					serviceID = Integer.valueOf(entry.getValue().toString());
-					serviceID++;
-				}
-			}
-		} else {
-			serviceID = 1;
-		}
-		PreparedStatement updateService = db.prepareUpdate("INSERT INTO service_police (serviceid, userid, reason, problem) VALUES (?, ?, ?, ?);");
+		int serviceID = greatestID();
+		PreparedStatement updateService = db.prepareStatement("INSERT INTO service_police (serviceid, userid, reason, problem) VALUES (?, ?, ?, ?);");
 		updateService.setInt(1, serviceID);
 		updateService.setInt(2, userID);
 		updateService.setString(3, reason);
 		updateService.setString(4, problem);
 		updateService.executeUpdate();
 	}
+	
+	 public int greatestID() throws Exception {
+		  List<Map<String, Object>> tempVar = db.getResults("SELECT COUNT(id) AS amount FROM service_police");
+		  int tempID = Integer.parseInt(String.valueOf(tempVar.get(0).get("amount")));
+		  
+		  if (tempID <= 0) return 1;
+
+		  return tempID;
+		 }
 }

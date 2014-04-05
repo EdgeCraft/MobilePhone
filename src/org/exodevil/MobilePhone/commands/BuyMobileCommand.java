@@ -18,7 +18,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
 import org.exodevil.MobilePhone.Phonebook;
-import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.BuyMobileTask;
 
 public class BuyMobileCommand implements CommandExecutor {
 
@@ -39,15 +39,16 @@ public class BuyMobileCommand implements CommandExecutor {
 			User playerName = userManager.getUser(p.getName());
 				String hasnumber = Phonebook.getNumberByUser(playerName.getID());
 				if (hasnumber.length() >= 3){
+					BuyMobileTask.payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
 					p.sendMessage("Deine Handynumber lautet: "  + hasnumber);
 				} else {
 					try {
-						String number = SignClickListener.generatenumber(playerName);
-						SignClickListener.payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
+						String number = BuyMobileTask.generatenumber(playerName);
+						BuyMobileTask.payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
 						p.sendMessage("Glückwunsch. Du hast dir dein erstes Handy gekauft");
 						p.sendMessage("Deine Handynumber lautet: " + number);
 						int id = userManager.getUser(p.getName()).getID();
-						PreparedStatement registerNumber = db.prepareUpdate("INSERT INTO mobilephone_contracts (id, number) VALUES (?, ?);");
+						PreparedStatement registerNumber = db.prepareStatement("INSERT INTO mobilephone_contracts (id, number) VALUES (?, ?);");
 						registerNumber.setInt(1, id);
 						registerNumber.setString(2, number);
 						registerNumber.executeUpdate();

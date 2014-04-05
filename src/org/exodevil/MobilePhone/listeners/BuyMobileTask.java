@@ -13,19 +13,18 @@ import net.edgecraft.edgecore.user.User;
 import net.edgecraft.edgecore.user.UserManager;
 
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.exodevil.MobilePhone.MobilePhone;
 import org.exodevil.MobilePhone.Phonebook;
 
-public class SignClickListener implements Listener {
+public class BuyMobileTask implements Listener {
 
 	final UserManager userManager = EdgeCoreAPI.userAPI();
 	final static Economy economy = EdgeConomyAPI.economyAPI();
@@ -33,66 +32,71 @@ public class SignClickListener implements Listener {
 	final DatabaseHandler db = EdgeCoreAPI.databaseAPI();
 	private MobilePhone plugin;
 
-	public SignClickListener(MobilePhone plugin) {
+	public BuyMobileTask(MobilePhone plugin) {
 		this.plugin = plugin;
 	}
 
 	@EventHandler
 	public void onSignClick(PlayerInteractEvent e) throws Exception{
+		if (!(e.getAction() == Action.LEFT_CLICK_BLOCK || e.getAction() == Action.RIGHT_CLICK_BLOCK)) return;
 		User playerName = userManager.getUser(e.getPlayer().getName());
 		Player p = e.getPlayer();
-		Block b = e.getClickedBlock();
+		Material m = e.getClickedBlock().getType();
 		ItemStack inHand = e.getPlayer().getItemInHand();
 		EconomyPlayer ep = economy.getEconomyPlayer(e.getPlayer().getName());
 		BankAccount acc = economy.getAccount(e.getPlayer().getName());
 		double Handykosten = this.plugin.getConfig().getInt("handy.kosten");
+		int id = userManager.getUser(p.getName()).getID();
+		String hasnumber = Phonebook.getNumberByUser(id);
 		if (!userManager.exists(e.getPlayer().getName())) {
 			p.sendMessage("Ein Fehler ist aufgetreten. Bitte kontaktiere ein Teammitglied.");
+			return;
 		} else {
-			if (b instanceof Sign){
-				boolean isMobileSign = isMobileSign(b);
+			if (m == Material.WALL_SIGN || m == Material.SIGN_POST){
+				Sign sign = (Sign) e.getClickedBlock().getState();
+				boolean isMobileSign = isMobileSign(sign);
 				if (isMobileSign == true){
-					if (inHand == null){
-						String hasnumber = this.plugin.getConfig().getString("numbern." + playerName + "number");
-						if (hasnumber != null){
-							payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
-							p.sendMessage("Deine Handynumber lautet: "  + hasnumber);
-						} else {
+					if (hasnumber.length() >= 3 ){
+						payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
+						p.sendMessage("Deine Handynumber lautet: "  + hasnumber);
+					} else {
+						if (inHand == null || inHand.getType() == Material.AIR || inHand.getAmount() == 0){
 							String number = generatenumber(playerName);
 							payMobile(p, playerName, acc, ep, Handykosten, EdgeSystem);
 							p.sendMessage("Glückwunsch. Du hast dir dein erstes Handy gekauft");
 							p.sendMessage("Deine Handynumber lautet: " + number);
-							int id = userManager.getUser(p.getName()).getID();
-							PreparedStatement registerNumber = db.prepareUpdate("INSERT INTO mobilephone_contracts (id, number) VALUES (?, default);");
+							PreparedStatement registerNumber = db.prepareStatement("INSERT INTO mobilephone_contracts (id, number) VALUES (?, ?);");
 							registerNumber.setInt(1, id);
 							registerNumber.setString(2, number);
 							registerNumber.executeUpdate();
 							Phonebook.synchronizeUsers();
+						} else {
+							p.sendMessage("Bitte wähle einen freien Platz in deiner Hotbar aus!");
 						}
-					}else {
-						p.sendMessage("Bitte wähle einen freien Platz in deiner Hotbar aus!");
 					}
-				} 
+				}
 			}
 		}
 	}
 
-	public boolean isMobileSign(Block b) {
+	public boolean isMobileSign(Sign sign) {
 		String text1 = this.plugin.getConfig().getString("sign.line1");
 		String text2 = this.plugin.getConfig().getString("sign.line2");
 		String text3 = this.plugin.getConfig().getString("sign.line3");
 		String text4 = this.plugin.getConfig().getString("sign.line4");
-		BlockState bs = b.getState();
-		Sign sign = (Sign) bs;
-		if (sign.getLine(0).equalsIgnoreCase(text1)) {
-			if(sign.getLine(1).equalsIgnoreCase(text2)) {
-				if(sign.getLine(2).equalsIgnoreCase(text3)) {
-					if (sign.getLine(3).equalsIgnoreCase(text4)) {
+		if (sign.getLine(0).equalsIgnoreCase(text1) == true) {
+			if(sign.getLine(1).equalsIgnoreCase(text2) == true) {
+				if(sign.getLine(2).equalsIgnoreCase(text3) == true) {
+					if (sign.getLine(3).equalsIgnoreCase(text4) == true) {
 						return true;
-					} else return false;
-				} else return false;
-			} else return false;
-		} else return false;
+					} else
+						return false;
+				} else
+					return false;
+			} else
+				return false;
+		} else
+			return false;
 	}
 
 	public static String generatenumber(User eventPlayer) throws Exception {
@@ -128,15 +132,13 @@ public class SignClickListener implements Listener {
 	}
 
 	public static void buyMobile(Player p, User eventPlayer, EdgeCraftSystem EdgeSystem) {
-		System.out.println("Debug#6");
-		
 		ItemStack ItemStack = new ItemStack(Material.CARROT_ITEM);
 		ItemMeta ItemMeta = ItemStack.getItemMeta();
 		ItemMeta.setDisplayName("Handy");
 		ItemStack.setItemMeta(ItemMeta);
 		p.setItemInHand(ItemStack);		
 	}
-	
+
 	public static boolean hasMobile(User user) {
 		ItemStack inHand = user.getPlayer().getItemInHand();
 		Material item = inHand.getType();
@@ -169,12 +171,11 @@ public class SignClickListener implements Listener {
 						p.sendMessage("Ein Fehler ist aufgetretet. Notiere die aktuelle Uhrzeit und melde diesen Fall einem Teammitglied");
 						e.printStackTrace();
 					}
-					
+
 				}
 			} else {
 				double balanceAfter = balanceNow - (Handykosten);
 				p.sendMessage("Du hast dir für " + mobileCharge + " ein Handy gekauft.");
-				System.out.println("Debug#7");
 				buyMobile(p, player, EdgeSystem);
 				p.sendMessage("Das Geld wurde von deinem Konto abgebucht");
 				try {

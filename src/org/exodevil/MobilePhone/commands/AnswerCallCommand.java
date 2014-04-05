@@ -9,7 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.exodevil.MobilePhone.listeners.SignClickListener;
+import org.exodevil.MobilePhone.listeners.BuyMobileTask;
 import org.exodevil.MobilePhone.sms.Memory;
 
 public class AnswerCallCommand implements CommandExecutor {
@@ -27,7 +27,7 @@ public class AnswerCallCommand implements CommandExecutor {
 			Player receiver = (Player) cmds;
 			User rec = userManager.getUser(receiver.getName());
 			if (Memory.beginnCALL.containsKey(rec.getID())) {
-				boolean hasMobile = SignClickListener.hasMobile(rec);
+				boolean hasMobile = BuyMobileTask.hasMobile(rec);
 				if (hasMobile == false) {
 					receiver.sendMessage(lang.getColoredMessage(rec.getLanguage(), "phone_mobile_in_hand"));
 					return true;
