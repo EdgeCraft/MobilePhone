@@ -1,14 +1,12 @@
 package org.exodevil.MobilePhone.commands;
 
-import org.bukkit.Bukkit;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.exodevil.MobilePhone.transmissionTowers.Util;
 
 public class TestCommand implements CommandExecutor {
-	OfflinePlayer[] offline = Bukkit.getOfflinePlayers();
 
 	@Override
 	public boolean onCommand(CommandSender cmds, Command cmd, String label,
@@ -18,7 +16,11 @@ public class TestCommand implements CommandExecutor {
 			return true;
 		} else {
 			Player player = (Player) cmds;
-			player.sendMessage("" + offline.toString());
+			try {
+				Util.buildTower(player);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return true;
 		}
 	}

@@ -8,3 +8,5 @@ handy:
     proMinute: 0.19
 sms:
     kosten: 1.0
+towers:
+    maxdistance: 100.0
