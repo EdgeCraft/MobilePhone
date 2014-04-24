@@ -41,7 +41,7 @@ public class Tower {
 				}
 			}
 			Location loc = new Location(world, x, y, z);
-			int id = Util.greatestID();
+			int id = TowerUtil.greatestID();
 			towers.put(id, loc);
 		}
 		return towers;

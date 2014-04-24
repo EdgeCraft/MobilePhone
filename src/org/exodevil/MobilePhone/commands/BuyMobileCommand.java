@@ -17,8 +17,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
-import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.listeners.BuyMobileTask;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 public class BuyMobileCommand implements CommandExecutor {
 

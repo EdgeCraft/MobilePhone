@@ -5,7 +5,8 @@ import java.util.HashMap;
 
 import net.edgecraft.edgecore.EdgeCoreAPI;
 import net.edgecraft.edgecore.command.CommandHandler;
-import net.edgecraft.edgecore.db.DatabaseHandler;
+import net.edgecraft.edgecore.system.SystemCommand;
+import net.edgecraft.edgecore.user.User;
 import net.edgecraft.edgecore.user.UserManager;
 
 import org.bukkit.Bukkit;
@@ -17,7 +18,7 @@ import org.exodevil.MobilePhone.commands.AnswerCallCommand;
 import org.exodevil.MobilePhone.commands.BuyMobileCommand;
 import org.exodevil.MobilePhone.commands.CallCommand;
 import org.exodevil.MobilePhone.commands.DenyCallCommand;
-import org.exodevil.MobilePhone.commands.HangUpCommand;
+import org.exodevil.MobilePhone.commands.HangUpTask;
 import org.exodevil.MobilePhone.commands.NumberCommand;
 import org.exodevil.MobilePhone.commands.SMSCommand;
 import org.exodevil.MobilePhone.commands.SearchCommand;
@@ -26,7 +27,10 @@ import org.exodevil.MobilePhone.commands.SynchUsersCommand;
 import org.exodevil.MobilePhone.commands.TestCommand;
 import org.exodevil.MobilePhone.listeners.PlayerJoinListener;
 import org.exodevil.MobilePhone.listeners.BuyMobileTask;
+import org.exodevil.MobilePhone.listeners.PlayerQuitTask;
 import org.exodevil.MobilePhone.listeners.SignPlaceListener;
+import org.exodevil.MobilePhone.util.Memory;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 public class MobilePhone extends JavaPlugin {
 
@@ -34,8 +38,7 @@ public class MobilePhone extends JavaPlugin {
 	public static String name = "[MobilePhone]";
 	public static MobilePhone instance;
 	
-	final DatabaseHandler DatabaseHandler = EdgeCoreAPI.databaseAPI();
-	final UserManager UserManager = EdgeCoreAPI.userAPI();
+	private static final UserManager userManager = EdgeCoreAPI.userAPI();
 	protected static final CommandHandler commands = CommandHandler.getInstance();
 	public static HashMap<Integer, String> numbers = new HashMap<Integer, String> ();
 
@@ -43,6 +46,7 @@ public class MobilePhone extends JavaPlugin {
 	public void onEnable(){
 		instance = this;
 		System.out.println(name + " loading configs"); 
+		loadConfig();
 		PluginDescriptionFile descFile = this.getDescription();
 		System.out.println(name + " Version: " + descFile.getVersion() + " by " + descFile.getAuthors());
 		PluginManager pm = this.getServer().getPluginManager();
@@ -62,7 +66,8 @@ public class MobilePhone extends JavaPlugin {
 	public void onDisable(){
 		System.out.println(name + " saving configs");
 		Bukkit.getScheduler().cancelAllTasks();
-		//alle nicht beendeten Gespräche beenden und abrechnen
+		System.out.println(name + " cancelling active calls");
+		cancelCalls();
 		System.out.println(name + " plugin disabled");
 	}
 	
@@ -82,18 +87,29 @@ public class MobilePhone extends JavaPlugin {
 		this.getCommand("number").setExecutor(new NumberCommand());
 		this.getCommand("call").setExecutor(new CallCommand());
 		this.getCommand("sms").setExecutor(new SMSCommand(this));
-		this.getCommand("answer").setExecutor(new AnswerCallCommand());
 		this.getCommand("deny").setExecutor(new DenyCallCommand());
-		this.getCommand("hangup").setExecutor(new HangUpCommand());
+		this.getCommand("hangup").setExecutor(new HangUpTask());
 		this.getCommand("service").setExecutor(new ServiceCommand());
 		this.getCommand("buymobile").setExecutor(new BuyMobileCommand());
 		this.getCommand("synchusers").setExecutor(new SynchUsersCommand());
-		this.getCommand("test").setExecutor(new TestCommand());
+		commands.registerCommand(TestCommand.getInstance());
 		commands.registerCommand(SearchCommand.getInstance());
+		commands.registerCommand(AnswerCallCommand.getInstance());
+		commands.registerCommand(SystemCommand.getInstance());
 	}
 	
 	public static MobilePhone getInstance() {
 		return instance;
+	}
+	
+	public void cancelCalls() {
+		for (User user : userManager.getUsers().values()) {
+			int userID = user.getID();
+			boolean isInCall = Memory.inCALL.containsKey(userID);
+			if (isInCall == true) {
+				PlayerQuitTask.cancelCall(user);
+			}
+		}
 	}
 	
 	

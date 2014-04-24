@@ -12,9 +12,9 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
-import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.listeners.BuyMobileTask;
-import org.exodevil.MobilePhone.sms.Memory;
+import org.exodevil.MobilePhone.util.Memory;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 public class SMSCommand implements CommandExecutor {
 
@@ -27,8 +27,6 @@ public class SMSCommand implements CommandExecutor {
 		this.plugin = plugin;
 	}
 
-	@SuppressWarnings("unused")
-	@Override
 	public boolean onCommand(CommandSender cmds, Command cmd, String label,	String[] args) {
 		if (!(cmds instanceof Player)) {
 			cmds.sendMessage("This command is not applicable for console");
@@ -37,10 +35,14 @@ public class SMSCommand implements CommandExecutor {
 			Player player = (Player) cmds;
 			User user = userManager.getUser(player.getName());
 			boolean mobile = BuyMobileTask.hasMobile(user);
-			if (mobile = false) {
+			if (mobile == false) {
 				player.sendMessage("Bitte nimm dein Handy in die Hand");
 				return false;
 			} else {
+				if (Memory.hasConnection.contains(user.getID())) {
+					player.sendMessage("Du hast keinen Empfang.");
+					return true;
+				}
 				if ((args.length < 2)) {
 					cmds.sendMessage("Bitte beachte die Syntax /sms <Nummer> <Nachricht>");
 					return true;
@@ -61,7 +63,7 @@ public class SMSCommand implements CommandExecutor {
 						double SMSCost = this.plugin.getConfig().getDouble("sms.kosten");
 						if (recipient.isOnline()) {
 							boolean hasMobile = MobilePhone.numbers.containsKey(rec.getID());
-							if (hasMobile = false) {
+							if (hasMobile == false) {
 								player.sendMessage("Dein eingegebener Empfänger besitzt kein Handy");
 								return true;
 							} else {

@@ -8,8 +8,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
-import org.exodevil.MobilePhone.Phonebook;
-import org.exodevil.MobilePhone.sms.Memory;
+import org.exodevil.MobilePhone.util.Memory;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 public class IncomingCallTask {
 

@@ -12,12 +12,12 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.exodevil.MobilePhone.Billing;
-import org.exodevil.MobilePhone.Phonebook;
+import org.exodevil.MobilePhone.listeners.PlayerQuitTask;
 import org.exodevil.MobilePhone.listeners.WatchCostsTask;
-import org.exodevil.MobilePhone.sms.Memory;
+import org.exodevil.MobilePhone.util.Billing;
+import org.exodevil.MobilePhone.util.Memory;
 
-public class HangUpCommand implements CommandExecutor {
+public class HangUpTask implements CommandExecutor {
 
 	private final UserManager userManager = EdgeCoreAPI.userAPI();
 	private static final ChatHandler chatHandler = EdgeCoreAPI.chatAPI(); 
@@ -42,29 +42,7 @@ public class HangUpCommand implements CommandExecutor {
 			if (isInCall == false) {
 				cmds.sendMessage(lang.getColoredMessage(u.getLanguage(), "phone_not_in_call"));
 			} else {
-				if (Memory.isP.containsValue(u.getID())) {
-					//Hangup von Anrufer
-					int pID = u.getID();
-					int recID = Memory.caller.get(pID);
-					User payer = userManager.getUser(pID);
-					String numberRec = Phonebook.getNumberByUser(recID);
-					String numberP = Phonebook.getNumberByUser(pID);
-					Memory.inCALL.remove(pID);
-					Memory.inCALL.remove(recID);
-					cancelChannel(numberP, numberRec, payer);
-
-				} else if (Memory.isRec.containsValue(u.getID())) {
-					//Hangup von Receiver
-					int recID = u.getID();
-					int pID = Memory.receiver.get(recID);
-					User payer = userManager.getUser(pID);
-					String numberRec = Phonebook.getNumberByUser(recID);
-					String numberP = Phonebook.getNumberByUser(pID);
-					Memory.inCALL.remove(pID);
-					Memory.inCALL.remove(recID);
-					cancelChannel(numberP, numberRec, payer);
-
-				}
+				PlayerQuitTask.cancelCall(u);
 			}
 		}
 		return true;

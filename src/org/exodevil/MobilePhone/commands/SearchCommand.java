@@ -4,7 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
-import org.exodevil.MobilePhone.Phonebook;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 import net.edgecraft.edgecore.EdgeCore;
 import net.edgecraft.edgecore.EdgeCoreAPI;
@@ -18,8 +18,6 @@ public class SearchCommand extends AbstractCommand {
 	private final UserManager userManager = EdgeCoreAPI.userAPI();
 	
 	private static final SearchCommand instance = new SearchCommand();
-	
-	private SearchCommand() { super(); }
 	
 	public static SearchCommand getInstance() {
 		return instance;
@@ -43,7 +41,7 @@ public class SearchCommand extends AbstractCommand {
 
 	@Override
 	public boolean validArgsRange(String[] args) {
-		return args.length == 3;
+		return args.length == 2;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package org.exodevil.MobilePhone;
+package org.exodevil.MobilePhone.util;
 
 import java.util.List;
 import java.util.Map;
@@ -8,7 +8,7 @@ import net.edgecraft.edgecore.db.DatabaseHandler;
 import net.edgecraft.edgecore.user.User;
 import net.edgecraft.edgecore.user.UserManager;
 
-import org.exodevil.MobilePhone.sms.Memory;
+import org.exodevil.MobilePhone.MobilePhone;
 
 
 public class Phonebook {

@@ -22,7 +22,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.exodevil.MobilePhone.MobilePhone;
-import org.exodevil.MobilePhone.Phonebook;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 public class BuyMobileTask implements Listener {
 
@@ -121,7 +121,6 @@ public class BuyMobileTask implements Listener {
 				if(MobilePhone.numbers.containsKey(number)){
 					continue;
 				} else {
-					//number und Name des Spielers in die Datenbank eintragen
 					MobilePhone.numbers.put(playerName.getID(), number);
 					break;
 				}

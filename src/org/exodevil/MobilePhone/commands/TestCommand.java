@@ -1,27 +1,52 @@
 package org.exodevil.MobilePhone.commands;
 
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
+import net.edgecraft.edgecore.EdgeCore;
+import net.edgecraft.edgecore.command.AbstractCommand;
+import net.edgecraft.edgecore.command.Level;
+import net.edgecraft.edgecore.user.User;
+
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.exodevil.MobilePhone.transmissionTowers.Util;
+import org.exodevil.MobilePhone.transmissionTowers.TowerUtil;
 
-public class TestCommand implements CommandExecutor {
+public class TestCommand extends AbstractCommand {
+	
+	private static final TestCommand instance = new TestCommand();
+	
+	private TestCommand() { super(); }
+	
+	public static TestCommand getInstance() {
+		return instance;
+	}
+	
+	@Override
+	public Level getLevel() {
+		return Level.ADMIN;
+	}
 
 	@Override
-	public boolean onCommand(CommandSender cmds, Command cmd, String label,
-			String[] args) {
-		if (!(cmds instanceof Player)) {
-			cmds.sendMessage("This command is not applicable for console");
-			return true;
-		} else {
-			Player player = (Player) cmds;
-			try {
-				Util.buildTower(player);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			return true;
-		}
+	public String[] getNames() {
+		return new String[] { "test" };
 	}
+
+	@Override
+	public boolean runImpl(Player player, User user, String[] args) throws Exception {
+		try {
+			TowerUtil.buildTower(player);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	@Override
+	public void sendUsageImpl(CommandSender cmds) {
+		cmds.sendMessage(EdgeCore.usageColor + "/test");
+	}
+
+	@Override
+	public boolean validArgsRange(String[] args) {
+		return args.length == 1;
+	}
+
 }

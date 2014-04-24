@@ -9,4 +9,9 @@ handy:
 sms:
     kosten: 1.0
 towers:
+    blocks:
+        down: IRON_BLOCK
+        middown: IRON_BLOCK
+        midtop: IRON_BLOCK
+        top: BEACON
     maxdistance: 100.0

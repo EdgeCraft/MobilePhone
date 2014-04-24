@@ -1,4 +1,4 @@
-package org.exodevil.MobilePhone;
+package org.exodevil.MobilePhone.util;
 
 import net.edgecraft.edgeconomy.EdgeConomyAPI;
 import net.edgecraft.edgeconomy.economy.BankAccount;
@@ -9,7 +9,7 @@ import net.edgecraft.edgecore.user.UserManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.exodevil.MobilePhone.sms.Memory;
+import org.exodevil.MobilePhone.MobilePhone;
 
 public class Billing {
 	private final static Economy economy = EdgeConomyAPI.economyAPI();

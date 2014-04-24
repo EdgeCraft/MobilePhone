@@ -1,5 +1,5 @@
 name: MobilePhone
-version: 0.1
+version: 0.4
 main: org.exodevil.MobilePhone.MobilePhone
 author: Exodevil
 website: http://edgecraft.de/
@@ -40,3 +40,6 @@ commands:
     test:
         description: testcommand
         usage: /<command>
+    mb:
+        description: mb system commands
+        useage: /<command>

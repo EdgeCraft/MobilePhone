@@ -14,11 +14,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.exodevil.MobilePhone.Phonebook;
 import org.exodevil.MobilePhone.listeners.IncomingCallTask;
 import org.exodevil.MobilePhone.listeners.BuyMobileTask;
 import org.exodevil.MobilePhone.listeners.WatchCostsTask;
-import org.exodevil.MobilePhone.sms.Memory;
+import org.exodevil.MobilePhone.util.Memory;
+import org.exodevil.MobilePhone.util.Phonebook;
 
 public class CallCommand implements CommandExecutor {
 
@@ -38,6 +38,10 @@ public class CallCommand implements CommandExecutor {
 			player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_mobile_in_hand"));
 			return true;
 		} else {
+			if (Memory.hasConnection.contains(p.getID())) {
+				player.sendMessage("Du hast keinen Empfang.");
+				return true;
+			}
 			if ((args.length != 1)) {
 				cmds.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_only_one_number"));
 				return true;
@@ -84,9 +88,9 @@ public class CallCommand implements CommandExecutor {
 				}
 			} else {
 				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_in_call"));
-				
+
 			}
-			
+
 			return true;
 		}
 	}

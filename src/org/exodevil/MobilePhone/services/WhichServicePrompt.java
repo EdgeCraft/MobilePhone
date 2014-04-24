@@ -31,12 +31,10 @@ public class WhichServicePrompt extends FixedSetPrompt {
               return new Emergency();
           } else if (s.equals("Auftragskiller")) {
         	  context.setSessionData("serviceType", s);
-        	  return Prompt.END_OF_CONVERSATION;
-              //return new Hitman();
+              return new Hitman();
           } else if (s.equals("Newsreporter")) {
         	  context.setSessionData("serviceType", s);
-        	  return Prompt.END_OF_CONVERSATION;
-              //return new NewsAgent();
+              return new NewsAgent();
           } else if (s.equals("Abbruch")) {
         	  return Prompt.END_OF_CONVERSATION;
           }
