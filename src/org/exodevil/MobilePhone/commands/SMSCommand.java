@@ -57,11 +57,18 @@ public class SMSCommand implements CommandExecutor {
 					String args0 = "";
 					args0 = args[0].toString();
 					User rec = Phonebook.getUserByNumber(args0);
+					double SMSCost = this.plugin.getConfig().getDouble("sms.kosten");
 					if (rec != null) {
 						Player recipient = Bukkit.getPlayer(rec.getName());
+						if (recipient == null) {
+							int id = rec.getID();
+							Memory.SMS.put(id,"Von " + player.getName() + ": " + text);
+							player.sendMessage("Dir wurden " + SMSCost + " abgezogen");
+							player.sendMessage("Deine Nachricht wurde erfolgreich zugestellt.");
+							return true;
+						}
 						double balanceP = economy.getAccount(user.getID()).getBalance();
-						double SMSCost = this.plugin.getConfig().getDouble("sms.kosten");
-						if (recipient.isOnline()) {
+						
 							boolean hasMobile = MobilePhone.numbers.containsKey(rec.getID());
 							if (hasMobile == false) {
 								player.sendMessage("Dein eingegebener Empfänger besitzt kein Handy");
@@ -78,13 +85,6 @@ public class SMSCommand implements CommandExecutor {
 									return true;
 								}
 							}
-						} else {
-							int id = rec.getID();
-							Memory.SMS.put(id,"Von: " + player + ": " + text);
-							player.sendMessage("Dir wurden " + SMSCost + " abgezogen");
-							player.sendMessage("Deine Nachricht wurde erfolgreich zugestellt.");
-							return true;
-						}
 					} else {
 						cmds.sendMessage("Die angegebene Nummer konnte nicht gefunden werden.");
 						return true;

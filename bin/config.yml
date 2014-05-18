@@ -1,8 +1,8 @@
 sign:
-    text1: bla
-    text2: bli
-    text3: blubb
-    text4: diblubb
+    line1: bla
+    line2: bli
+    line3: blubb
+    line4: diblubb
 handy:
     kosten: 15
     proMinute: 0.19

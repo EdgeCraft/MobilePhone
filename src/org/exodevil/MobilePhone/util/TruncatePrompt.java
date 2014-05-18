@@ -22,6 +22,7 @@ public class TruncatePrompt extends NumericPrompt {
 			String table = (String)context.getSessionData("table");
 			try {
 				TruncateDatabase.execute(table);
+				context.getForWhom().sendRawMessage("Table " + table + " successfull truncated.");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

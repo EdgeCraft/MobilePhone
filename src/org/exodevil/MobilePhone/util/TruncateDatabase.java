@@ -12,11 +12,7 @@ public class TruncateDatabase {
 
 
 	public static void execute (String table) throws Exception {
-		if (table.equals("all")) {
-			//truncate all mobilephone tables
-		} else {
 			PreparedStatement truncate = db.prepareStatement("TRUNCATE TABLE " + table);
 			truncate.executeUpdate();
-		}
 	}
 }

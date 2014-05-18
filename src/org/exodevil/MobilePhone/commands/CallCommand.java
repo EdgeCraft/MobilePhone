@@ -1,5 +1,6 @@
 package org.exodevil.MobilePhone.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import net.edgecraft.edgecore.EdgeCoreAPI;
@@ -10,6 +11,7 @@ import net.edgecraft.edgecore.user.UserManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -49,23 +51,29 @@ public class CallCommand implements CommandExecutor {
 			String number = args[0].toString();
 			User searchFor = Phonebook.getUserByNumber(number);
 			if (searchFor == null) {
-				player.sendMessage("Nummer nicht gefunden");
+				player.sendMessage("Nummer nicht gefunden.");
 				return true;
 			}
-			Player receiver =  Bukkit.getPlayer(searchFor.getName());
+			Player receiver = null;
+			try {
+				receiver =  Bukkit.getPlayer(searchFor.getName());
+			} catch (Exception e) {
+				
+			}
+			if (receiver == null) {
+				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_offline"));
+				List<String> missed = Memory.missedCALL.get(searchFor.getID());
+				if (missed == null) {
+					missed = new ArrayList<String>();
+				}
+				missed.add(player.getName());
+				Memory.missedCALL.put(searchFor.getID(), missed);
+				return true;
+			}
 			User rec = userManager.getUser(receiver.getName());
 			String numberPlayer = Phonebook.getNumberByUser(p.getID());
 			if (numberPlayer.equals(number)) {
 				player.sendMessage("Du kannst dich nicht selber anrufen.");
-				return true;
-			}
-			if (!(receiver.isOnline())) {
-				player.sendMessage(lang.getColoredMessage(p.getLanguage(), "phone_receiver_offline"));
-				List<String> missed = Memory.missedCALL.get(p.getID());
-
-				missed.add(player.getName());
-
-				Memory.missedCALL.put(p.getID(), missed);
 				return true;
 			}
 			boolean PIsInCall = Phonebook.UserIsInCall(p.getID());

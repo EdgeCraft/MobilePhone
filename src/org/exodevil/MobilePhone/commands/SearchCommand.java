@@ -35,13 +35,13 @@ public class SearchCommand extends AbstractCommand {
 
 	@Override
 	public void sendUsageImpl(CommandSender cmds) {
-		cmds.sendMessage(EdgeCore.usageColor + "/search user");
-		cmds.sendMessage(EdgeCore.usageColor + "/search number");
+		cmds.sendMessage(EdgeCore.usageColor + "/search player <Spielename>");
+		cmds.sendMessage(EdgeCore.usageColor + "/search number <Telefonnummer>");
 	}
 
 	@Override
 	public boolean validArgsRange(String[] args) {
-		return args.length == 2;
+		return args.length == 3;
 	}
 
 	@Override
@@ -53,8 +53,8 @@ public class SearchCommand extends AbstractCommand {
 			}
 			String number = args[2].toString();
 			User searchFor = Phonebook.getUserByNumber(number);
-			Player searchedFor = Bukkit.getPlayer(searchFor.getName());
-			player.sendMessage(MobilePhone.name + " Die Handynummer " + number + " gehört " + searchedFor.getName());
+			String searchedFor = searchFor.getName();
+			player.sendMessage(MobilePhone.name + " Die Handynummer " + number + " gehört " + searchedFor);
 			return true;
 		}
 

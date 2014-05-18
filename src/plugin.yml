@@ -43,3 +43,6 @@ commands:
     mb:
         description: mb system commands
         useage: /<command>
+    mp:
+        description: mb system command
+        useage: /<command>

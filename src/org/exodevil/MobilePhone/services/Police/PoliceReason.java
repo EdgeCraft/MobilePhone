@@ -57,7 +57,7 @@ public class PoliceReason extends StringPrompt {
 	}
 	
 	 public int greatestID() throws Exception {
-		  List<Map<String, Object>> tempVar = db.getResults("SELECT COUNT(id) AS amount FROM service_police");
+		  List<Map<String, Object>> tempVar = db.getResults("SELECT COUNT(serviceid) AS amount FROM service_police");
 		  int tempID = Integer.parseInt(String.valueOf(tempVar.get(0).get("amount")));
 		  
 		  if (tempID <= 0) return 1;

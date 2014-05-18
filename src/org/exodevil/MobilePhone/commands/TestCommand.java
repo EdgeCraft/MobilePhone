@@ -31,11 +31,7 @@ public class TestCommand extends AbstractCommand {
 
 	@Override
 	public boolean runImpl(Player player, User user, String[] args) throws Exception {
-		try {
-			TowerUtil.buildTower(player);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 		return true;
 	}
 

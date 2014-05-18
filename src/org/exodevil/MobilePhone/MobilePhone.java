@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import net.edgecraft.edgecore.EdgeCoreAPI;
 import net.edgecraft.edgecore.command.CommandHandler;
-import net.edgecraft.edgecore.system.SystemCommand;
 import net.edgecraft.edgecore.user.User;
 import net.edgecraft.edgecore.user.UserManager;
 
@@ -24,6 +23,7 @@ import org.exodevil.MobilePhone.commands.SMSCommand;
 import org.exodevil.MobilePhone.commands.SearchCommand;
 import org.exodevil.MobilePhone.commands.ServiceCommand;
 import org.exodevil.MobilePhone.commands.SynchUsersCommand;
+import org.exodevil.MobilePhone.commands.SystemCommand;
 import org.exodevil.MobilePhone.commands.TestCommand;
 import org.exodevil.MobilePhone.listeners.PlayerJoinListener;
 import org.exodevil.MobilePhone.listeners.BuyMobileTask;
@@ -92,10 +92,10 @@ public class MobilePhone extends JavaPlugin {
 		this.getCommand("service").setExecutor(new ServiceCommand());
 		this.getCommand("buymobile").setExecutor(new BuyMobileCommand());
 		this.getCommand("synchusers").setExecutor(new SynchUsersCommand());
+		this.getCommand("mp").setExecutor(new SystemCommand());
 		commands.registerCommand(TestCommand.getInstance());
 		commands.registerCommand(SearchCommand.getInstance());
 		commands.registerCommand(AnswerCallCommand.getInstance());
-		commands.registerCommand(SystemCommand.getInstance());
 	}
 	
 	public static MobilePhone getInstance() {

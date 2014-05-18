@@ -1,5 +1,9 @@
 package org.exodevil.MobilePhone.commands;
 
+import net.edgecraft.edgecore.EdgeCoreAPI;
+import net.edgecraft.edgecore.user.User;
+import net.edgecraft.edgecore.user.UserManager;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -13,10 +17,12 @@ import org.bukkit.conversations.ConversationPrefix;
 import org.bukkit.entity.Player;
 import org.exodevil.MobilePhone.MobilePhone;
 import org.exodevil.MobilePhone.services.WhichServicePrompt;
+import org.exodevil.MobilePhone.util.Memory;
 
 public class ServiceCommand implements CommandExecutor, ConversationAbandonedListener {
 
 	private ConversationFactory conversationFactory;
+	private static final UserManager userManager = EdgeCoreAPI.userAPI();
 
 	public ServiceCommand () {
 		this.conversationFactory = new ConversationFactory(MobilePhone.getInstance())
@@ -35,6 +41,12 @@ public class ServiceCommand implements CommandExecutor, ConversationAbandonedLis
 			cmds.sendMessage("This command is not applicable for console");
 			return true;
 		} else {
+			Player player = (Player) cmds;
+			User p = userManager.getUser(player.getName());
+			if (Memory.hasConnection.contains(p.getID())) {
+				player.sendMessage("Du hast keinen Empfang.");
+				return true;
+			}
 			conversationFactory.buildConversation((Conversable)cmds).begin();
 		}
 

@@ -12,13 +12,17 @@ public class TruncateWhichDBPrompt extends FixedSetPrompt {
 	
 	@Override
 	public String getPromptText(ConversationContext context) {
-		return "Welche Tabelle soll geleert werden?";
+		return "Welche Tabelle soll geleert werden?" + formatFixedSet();
 	}
 
 
 	@Override
 	protected Prompt acceptValidatedInput(ConversationContext context, String s) {
 		context.setSessionData("table", s);
+		if (s.equalsIgnoreCase("all")) {
+			
+			return END_OF_CONVERSATION;
+		}
 		return new TruncatePrompt();
 	}
 
